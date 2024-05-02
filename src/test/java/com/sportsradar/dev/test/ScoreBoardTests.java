@@ -16,4 +16,11 @@ public class ScoreBoardTests {
     public void testSetupOK() {
         assertTrue(true);
     }
+
+    @Test
+    public void testAddMatch() {
+        ScoreBoard scoreboard = new ScoreBoard();
+        scoreboard.addMatch("Team A", "Team B");
+        assertTrue(scoreboard.getMatches().size() == 1);
+    }
 }
