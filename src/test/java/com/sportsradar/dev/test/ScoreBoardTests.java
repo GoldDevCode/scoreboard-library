@@ -6,8 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit test for simple App.
@@ -20,18 +19,38 @@ public class ScoreBoardTests {
     void setUp() {
         scoreboard = new ScoreBoardImpl();
     }
+
     /**
      * Initial test to check if the test framework is working
      */
     @Test
-    @DisplayName("Test if the test framework is working")
+    @DisplayName("Check if the test framework is working")
     void testSetupOK() {
         assertTrue(true);
     }
 
     @Test
-    void testAddMatch() throws Exception {
-        assertThrows(UnsupportedOperationException.class, () -> scoreboard.addMatch("Team A", "Team B"));
+    @DisplayName("Test if the match is added successfully")
+    void testStartMatch_OK() throws Exception {
+        assertEquals(1, scoreboard.startMatch("Germany", "France"));
+        assertEquals(2, scoreboard.startMatch("Spain", "Italy"));
+        assertEquals(2, scoreboard.getMatches().size());
+    }
+
+    @Test
+    @DisplayName("Test match not started when home team or away team is already playing")
+    void testStartMatch_Fails_When_HomeTeam_Or_AwayTeam_Is_Already_Playing() throws Exception {
+        assertEquals(1, scoreboard.startMatch("Germany", "France"));
+        assertThrows(IllegalStateException.class, () -> scoreboard.startMatch("France", "Italy"));
+    }
+
+    @Test
+    @DisplayName("Test match not started when home team or away team name is not valid")
+    void testStartMatch_Fails_When_HomeTeam_Or_AwayTeam_Name_Is_Invalid() throws Exception {
+        assertThrows(IllegalArgumentException.class, () -> scoreboard.startMatch("Germany", null));
+        assertThrows(IllegalArgumentException.class, () -> scoreboard.startMatch("", "Italy"));
+        assertThrows(IllegalArgumentException.class, () -> scoreboard.startMatch("Germany", "ygrfbej"));
+        assertThrows(IllegalArgumentException.class, () -> scoreboard.startMatch("ABVGAVGVA", "ehrifhr"));
     }
 
     @Test
@@ -41,7 +60,7 @@ public class ScoreBoardTests {
 
     @Test
     void testDeleteMatch() throws Exception {
-        assertThrows(UnsupportedOperationException.class, () -> scoreboard.deleteMatch(1));
+        assertThrows(UnsupportedOperationException.class, () -> scoreboard.finishMatch(1));
     }
 
     @Test
