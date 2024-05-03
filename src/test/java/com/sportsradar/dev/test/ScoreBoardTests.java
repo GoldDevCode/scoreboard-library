@@ -16,10 +16,9 @@ public class ScoreBoardTests {
     private ScoreBoard scoreboard;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         scoreboard = new ScoreBoardImpl();
     }
-
     /**
      * Initial test to check if the test framework is working
      */
@@ -32,16 +31,19 @@ public class ScoreBoardTests {
     @Test
     @DisplayName("Test if the match is started successfully")
     void testStartMatch_OK() throws Exception {
-        assertEquals(1, scoreboard.startMatch("Germany", "France"));
-        assertEquals(2, scoreboard.startMatch("France", "Saudi Arabia"));
+        scoreboard.startMatch("Germany", "France");
+        scoreboard.startMatch("Costa Rica", "Saudi Arabia");
         assertEquals(2, scoreboard.getMatches().size());
     }
 
     @Test
     @DisplayName("Test match not started when home team or away team is already playing")
     void testStartMatch_Fails_When_HomeTeam_Or_AwayTeam_Is_Already_Playing() throws Exception {
-        assertEquals(1, scoreboard.startMatch("Germany", "France"));
-        assertThrows(IllegalStateException.class, () -> scoreboard.startMatch("France", "Italy"));
+        scoreboard.startMatch("Germany", "France");
+        assertEquals(-1, scoreboard.startMatch("Germany", "Costa Rica"));
+        assertEquals(-1, scoreboard.startMatch("France", "USA"));
+        assertEquals(-1, scoreboard.startMatch("Germany", "France"));
+        assertEquals(1, scoreboard.getMatches().size());
     }
 
     @Test
@@ -51,6 +53,7 @@ public class ScoreBoardTests {
         assertEquals(-1, scoreboard.startMatch("", "Italy"));
         assertEquals(-1, scoreboard.startMatch("Germany", "ygrfbej"));
         assertEquals(-1, scoreboard.startMatch("ABVGAVGVA", "ehrifhr"));
+        assertEquals(0, scoreboard.getMatches().size());
     }
 
     @Test
@@ -67,4 +70,5 @@ public class ScoreBoardTests {
     void testGetScoreBoardSummary() throws Exception {
         assertThrows(UnsupportedOperationException.class, () -> scoreboard.getScoreBoardSummary());
     }
+
 }

@@ -1,41 +1,7 @@
 package com.sportsradar.dev.team;
 
 public enum Teams {
-    /*
-    QATAR,
-    ECUADOR,
-    SENEGAL,
-    NETHERLANDS,
-    ENGLAND,
-    IRAN,
-    USA,
-    WALES,
-    ARGENTINA,
-    SAUDI_ARABIA,
-    MEXICO,
-    POLAND,
-    FRANCE,
-    AUSTRALIA,
-    DENMARK,
-    TUNISIA,
-    SPAIN,
-    COSTA_RICA,
-    GERMANY,
-    JAPAN,
-    BELGIUM,
-    CANADA,
-    MOROCCO,
-    CROATIA,
-    BRAZIL,
-    SERBIA,
-    SWITZERLAND,
-    CAMEROON,
-    PORTUGAL,
-    GHANA,
-    URUGUAY,
-    KOREA_REPUBLIC;
 
-     */
     QATAR("Qatar"),
     ECUADOR("Ecuador"),
     SENEGAL("Senegal"),
