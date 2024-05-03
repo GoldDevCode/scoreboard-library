@@ -30,10 +30,10 @@ public class ScoreBoardTests {
     }
 
     @Test
-    @DisplayName("Test if the match is added successfully")
+    @DisplayName("Test if the match is started successfully")
     void testStartMatch_OK() throws Exception {
         assertEquals(1, scoreboard.startMatch("Germany", "France"));
-        assertEquals(2, scoreboard.startMatch("Spain", "Italy"));
+        assertEquals(2, scoreboard.startMatch("France", "Saudi Arabia"));
         assertEquals(2, scoreboard.getMatches().size());
     }
 
@@ -47,10 +47,10 @@ public class ScoreBoardTests {
     @Test
     @DisplayName("Test match not started when home team or away team name is not valid")
     void testStartMatch_Fails_When_HomeTeam_Or_AwayTeam_Name_Is_Invalid() throws Exception {
-        assertThrows(IllegalArgumentException.class, () -> scoreboard.startMatch("Germany", null));
-        assertThrows(IllegalArgumentException.class, () -> scoreboard.startMatch("", "Italy"));
-        assertThrows(IllegalArgumentException.class, () -> scoreboard.startMatch("Germany", "ygrfbej"));
-        assertThrows(IllegalArgumentException.class, () -> scoreboard.startMatch("ABVGAVGVA", "ehrifhr"));
+        assertEquals(-1, scoreboard.startMatch("Germany", null));
+        assertEquals(-1, scoreboard.startMatch("", "Italy"));
+        assertEquals(-1, scoreboard.startMatch("Germany", "ygrfbej"));
+        assertEquals(-1, scoreboard.startMatch("ABVGAVGVA", "ehrifhr"));
     }
 
     @Test
