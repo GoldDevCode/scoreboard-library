@@ -120,7 +120,9 @@ public class ScoreBoardTests {
 
     @Test
     void testGetScoreBoardSummary() throws Exception {
-        assertThrows(UnsupportedOperationException.class, () -> scoreboard.getScoreBoardSummary());
+        int matchNumber = scoreboard.startMatch("Germany", "France");
+        scoreboard.updateScore(matchNumber, 3, 2);
+        assertEquals(1, scoreboard.getScoreBoardSummary().size());
     }
 
 }
