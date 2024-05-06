@@ -110,8 +110,17 @@ public class ScoreBoardImpl implements ScoreBoard {
      * @throws Exception
      */
     @Override
-    public List<?> getScoreBoardSummary() throws Exception {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public List<String> getScoreBoardSummary() throws Exception {
+        final List<String> matchSummary = matches.values()
+                .stream()
+                .sorted((m1, m2) -> {
+                    if (m1.getTotalScore() == m2.getTotalScore()) {
+                        return Long.compare(m2.getId(), m1.getId());
+                    }
+                    return Integer.compare(m2.getTotalScore(), m1.getTotalScore());
+                }).map(Match::toString).toList();
+
+        return matchSummary;
     }
 
     /**
@@ -119,7 +128,7 @@ public class ScoreBoardImpl implements ScoreBoard {
      * @throws Exception
      */
     @Override
-    public List<?> getMatches() throws Exception {
+    public List<Match> getMatches() throws Exception {
         return new ArrayList<>(matches.values());
     }
 

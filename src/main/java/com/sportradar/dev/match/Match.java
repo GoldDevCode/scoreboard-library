@@ -3,8 +3,8 @@ package com.sportradar.dev.match;
 public class Match {
     private static int idGenerator = 0;
     private final int id;
-    private String homeTeam;
-    private String awayTeam;
+    private final String homeTeam;
+    private final String awayTeam;
     private int homeTeamScore;
     private int awayTeamScore;
 
@@ -42,4 +42,14 @@ public class Match {
         this.awayTeamScore = awayTeamScore;
     }
 
+    public int getTotalScore() {
+        return homeTeamScore + awayTeamScore;
+    }
+
+    @Override
+    public String toString() {
+        return homeTeam + " " + homeTeamScore +
+                " - " +
+                awayTeam + " " + awayTeamScore;
+    }
 }

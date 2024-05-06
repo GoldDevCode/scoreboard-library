@@ -119,10 +119,22 @@ public class ScoreBoardTests {
     }
 
     @Test
-    void testGetScoreBoardSummary() throws Exception {
-        int matchNumber = scoreboard.startMatch("Germany", "France");
-        scoreboard.updateScore(matchNumber, 3, 2);
-        assertEquals(1, scoreboard.getScoreBoardSummary().size());
+    void testGetScoreBoardSummary_OK() throws Exception {
+        int match1 = scoreboard.startMatch("Germany", "France");
+        int match2 = scoreboard.startMatch("Costa Rica", "Saudi Arabia");
+        int match3 = scoreboard.startMatch("Japan", "Spain");
+        int match4 = scoreboard.startMatch("Ghana", "USA");
+
+        scoreboard.updateScore(match1, 3, 2);
+        scoreboard.updateScore(match2, 1, 1);
+        scoreboard.updateScore(match3, 2, 3);
+        scoreboard.updateScore(match4, 1, 0);
+
+        assertEquals(4, scoreboard.getScoreBoardSummary().size());
+        assertEquals("Japan 2 - Spain 3", scoreboard.getScoreBoardSummary().getFirst());
+        assertEquals("Germany 3 - France 2", scoreboard.getScoreBoardSummary().get(1));
+        assertEquals("Costa Rica 1 - Saudi Arabia 1", scoreboard.getScoreBoardSummary().get(2));
+        assertEquals("Ghana 1 - USA 0", scoreboard.getScoreBoardSummary().getLast());
     }
 
 }
