@@ -1,4 +1,4 @@
-package com.sportsradar.dev.match;
+package com.sportradar.dev.match;
 
 public class Match {
     private static int idGenerator = 0;

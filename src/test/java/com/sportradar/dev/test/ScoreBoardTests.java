@@ -1,7 +1,7 @@
-package com.sportsradar.dev.test;
+package com.sportradar.dev.test;
 
-import com.sportsradar.dev.scoreboard.ScoreBoard;
-import com.sportsradar.dev.scoreboard.impl.ScoreBoardImpl;
+import com.sportradar.dev.scoreboard.ScoreBoard;
+import com.sportradar.dev.scoreboard.impl.ScoreBoardImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -62,8 +62,11 @@ public class ScoreBoardTests {
     }
 
     @Test
-    void testDeleteMatch() throws Exception {
-        assertThrows(UnsupportedOperationException.class, () -> scoreboard.finishMatch(1));
+    void testFinishMatch_OK() throws Exception {
+        int matchNumber = scoreboard.startMatch("Germany", "France");
+        assertEquals(1, scoreboard.getMatches().size());
+        scoreboard.finishMatch(matchNumber);
+        assertEquals(0, scoreboard.getMatches().size());
     }
 
     @Test

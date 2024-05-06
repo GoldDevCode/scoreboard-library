@@ -1,4 +1,4 @@
-package com.sportsradar.dev.team;
+package com.sportradar.dev.team;
 
 public enum Teams {
 

@@ -1,8 +1,8 @@
-package com.sportsradar.dev.scoreboard.impl;
+package com.sportradar.dev.scoreboard.impl;
 
-import com.sportsradar.dev.match.Match;
-import com.sportsradar.dev.scoreboard.ScoreBoard;
-import com.sportsradar.dev.team.Teams;
+import com.sportradar.dev.match.Match;
+import com.sportradar.dev.scoreboard.ScoreBoard;
+import com.sportradar.dev.team.Teams;
 
 import java.util.ArrayList;
 import java.util.HashMap;

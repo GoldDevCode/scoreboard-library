@@ -1,4 +1,4 @@
-package com.sportsradar.dev.scoreboard;
+package com.sportradar.dev.scoreboard;
 
 import java.util.List;
 
