@@ -68,6 +68,36 @@ public class ScoreBoardTests {
     }
 
     @Test
+    void testUpdateScore_Fail_When_Negative_Score_Value() throws Exception {
+        int matchNumber = scoreboard.startMatch("Germany", "France");
+        assertThrows(IllegalArgumentException.class, () -> scoreboard.updateScore(matchNumber, 3, -1));
+        Match match = (Match) scoreboard.getMatches().getFirst();
+        assertEquals(0, match.getHomeTeamScore());
+        assertEquals(0, match.getAwayTeamScore());
+    }
+
+    @Test
+    void testUpdateScore_Fail_When_Score_Value_Less_than_Current_Score() throws Exception {
+        int matchNumber = scoreboard.startMatch("Germany", "France");
+        scoreboard.updateScore(matchNumber, 3, 2);
+        assertThrows(IllegalArgumentException.class, () -> scoreboard.updateScore(matchNumber, 2, 4));
+        assertThrows(IllegalArgumentException.class, () -> scoreboard.updateScore(matchNumber, 1, 1));
+        Match match = (Match) scoreboard.getMatches().getFirst();
+        assertEquals(3, match.getHomeTeamScore());
+        assertEquals(2, match.getAwayTeamScore());
+    }
+
+    @Test
+    void testUpdateScore_Fail_When_Both_Score_Value_Equal_To_Current_Score() throws Exception {
+        int matchNumber = scoreboard.startMatch("Germany", "France");
+        scoreboard.updateScore(matchNumber, 3, 2);
+        assertThrows(IllegalArgumentException.class, () -> scoreboard.updateScore(matchNumber, 3, 2));
+        Match match = (Match) scoreboard.getMatches().getFirst();
+        assertEquals(3, match.getHomeTeamScore());
+        assertEquals(2, match.getAwayTeamScore());
+    }
+
+    @Test
     void testFinishMatch_OK() throws Exception {
         int matchNumber = scoreboard.startMatch("Germany", "France");
         assertEquals(1, scoreboard.getMatches().size());

@@ -58,7 +58,34 @@ public class ScoreBoardImpl implements ScoreBoard {
      */
     @Override
     public void updateScore(Integer matchNumber, int homeTeamScore, int awayTeamScore) throws Exception {
-        throw new UnsupportedOperationException("Not implemented yet");
+        Match match = matches.get(matchNumber);
+        if (match == null) {
+            logger.severe("Match not found for match number=" + matchNumber);
+            throw new IllegalArgumentException("Match not found for match number=" + matchNumber);
+        } else if (homeTeamScore < 0 || awayTeamScore < 0) {
+            logger.severe("Invalid score values for update. " +
+                    "Home team score and/or Away team score is negative." +
+                    "HomeTeamScore=" + homeTeamScore + ", AwayTeamScore=" + awayTeamScore);
+            throw new IllegalArgumentException("Invalid score values for update. " +
+                    "Home team score and/or Away team score is negative." +
+                    "HomeTeamScore=" + homeTeamScore + ", AwayTeamScore=" + awayTeamScore);
+        } else if (homeTeamScore < match.getHomeTeamScore() || awayTeamScore < match.getAwayTeamScore()) {
+            logger.severe("Invalid score values for update. " +
+                    "Home team score and/or Away team score is less than current score." +
+                    "HomeTeamScore=" + homeTeamScore + ", AwayTeamScore=" + awayTeamScore);
+            throw new IllegalArgumentException("Invalid score values for update. " +
+                    "Home team score and/or Away team score is less than current score." +
+                    "HomeTeamScore=" + homeTeamScore + ", AwayTeamScore=" + awayTeamScore);
+        } else if (homeTeamScore == match.getHomeTeamScore() && awayTeamScore == match.getAwayTeamScore()) {
+            logger.severe("No change in score values. " +
+                    "Home team score and Away team score are same as current score." +
+                    "HomeTeamScore=" + homeTeamScore + ", AwayTeamScore=" + awayTeamScore);
+            throw new IllegalArgumentException("No change in score values. " + "Home team score and Away team score are same as current score." +
+                    "HomeTeamScore=" + homeTeamScore + ", AwayTeamScore=" + awayTeamScore);
+        } else {
+            match.setHomeTeamScore(homeTeamScore);
+            match.setAwayTeamScore(awayTeamScore);
+        }
     }
 
     /**
