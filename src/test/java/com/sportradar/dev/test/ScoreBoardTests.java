@@ -67,6 +67,19 @@ public class ScoreBoardTests {
         assertEquals(1, scoreboard.getMatches().size());
         scoreboard.finishMatch(matchNumber);
         assertEquals(0, scoreboard.getMatches().size());
+        //Testing via assertion that you can start a match again with the same teams.
+        matchNumber = scoreboard.startMatch("Germany", "France");
+        assertEquals(1, scoreboard.getMatches().size());
+    }
+
+    @Test
+    void testFinishMatch_MatchNotFound() throws Exception {
+        int matchNumber = scoreboard.startMatch("Germany", "France");
+        assertEquals(1, scoreboard.getMatches().size());
+        assertThrows(IllegalArgumentException.class, () -> scoreboard.finishMatch(-1));
+        assertEquals(1, scoreboard.getMatches().size());
+        //Testing via assertion that you cannot start a match again with the same teams, if not deleted.
+        assertEquals(-1, scoreboard.startMatch("Germany", "France"));
     }
 
     @Test

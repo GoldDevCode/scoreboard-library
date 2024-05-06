@@ -67,7 +67,15 @@ public class ScoreBoardImpl implements ScoreBoard {
      */
     @Override
     public void finishMatch(Integer matchNumber) throws Exception {
-        throw new UnsupportedOperationException("Not implemented yet");
+        Match match = matches.get(matchNumber);
+        if (match == null) {
+            logger.severe("Match not found for match number=" + matchNumber);
+            throw new IllegalArgumentException("Match not found for match number=" + matchNumber);
+        } else {
+            matches.remove(matchNumber);
+            teamToMatchNumber.remove(match.getHomeTeam());
+            teamToMatchNumber.remove(match.getAwayTeam());
+        }
     }
 
     /**
