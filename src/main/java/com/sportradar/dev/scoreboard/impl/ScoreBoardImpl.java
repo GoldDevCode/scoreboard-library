@@ -79,6 +79,7 @@ public class ScoreBoardImpl implements ScoreBoard {
         } else if (homeTeamScore == match.getHomeTeamScore() && awayTeamScore == match.getAwayTeamScore()) {
             logger.severe("No change in score values. " +
                     "Home team score and Away team score are same as current score." +
+                    "Current score=" + match.getHomeTeamScore() + " - " + match.getAwayTeamScore() + ", " +
                     "HomeTeamScore=" + homeTeamScore + ", AwayTeamScore=" + awayTeamScore);
             throw new IllegalArgumentException("No change in score values. " + "Home team score and Away team score are same as current score." +
                     "HomeTeamScore=" + homeTeamScore + ", AwayTeamScore=" + awayTeamScore);

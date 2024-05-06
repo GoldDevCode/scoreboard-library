@@ -5,6 +5,7 @@ import com.sportradar.dev.match.Match;
 import java.util.List;
 
 public interface ScoreBoard {
+
     Integer startMatch(String homeTeam, String awayTeam) throws Exception;
 
     void updateScore(Integer matchNumber, int homeTeamScore, int awayTeamScore) throws Exception;
