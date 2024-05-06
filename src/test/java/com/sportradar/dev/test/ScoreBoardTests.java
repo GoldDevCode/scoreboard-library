@@ -1,5 +1,6 @@
 package com.sportradar.dev.test;
 
+import com.sportradar.dev.match.Match;
 import com.sportradar.dev.scoreboard.ScoreBoard;
 import com.sportradar.dev.scoreboard.impl.ScoreBoardImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,7 @@ public class ScoreBoardTests {
     public void setUp() {
         scoreboard = new ScoreBoardImpl();
     }
+
     /**
      * Initial test to check if the test framework is working
      */
@@ -57,8 +59,12 @@ public class ScoreBoardTests {
     }
 
     @Test
-    void testUpdateScore() throws Exception {
-        assertThrows(UnsupportedOperationException.class, () -> scoreboard.updateScore(1, 3, 1));
+    void testUpdateScore_OK() throws Exception {
+        int matchNumber = scoreboard.startMatch("Germany", "France");
+        scoreboard.updateScore(matchNumber, 3, 1);
+        Match match = (Match) scoreboard.getMatches().getFirst();
+        assertEquals(3, match.getHomeTeamScore());
+        assertEquals(1, match.getAwayTeamScore());
     }
 
     @Test
