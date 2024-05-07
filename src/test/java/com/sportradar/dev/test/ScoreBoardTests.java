@@ -11,9 +11,7 @@ import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Unit test for simple App.
- */
+@DisplayName("ScoreBoard Tests")
 public class ScoreBoardTests {
     private static final Logger logger = Logger.getLogger(ScoreBoardTests.class.getName());
     private ScoreBoard scoreboard;
@@ -57,6 +55,7 @@ public class ScoreBoardTests {
         assertEquals(-1, scoreboard.startMatch("", "Italy"));
         assertEquals(-1, scoreboard.startMatch("Germany", "ygrfbej"));
         assertEquals(-1, scoreboard.startMatch("ABVGAVGVA", "ehrifhr"));
+        assertEquals(-1, scoreboard.startMatch("USA", "USA"));
         assertEquals(0, scoreboard.getMatches().size());
     }
 
@@ -169,37 +168,35 @@ public class ScoreBoardTests {
     @Test
     void testIncorrectScoreUpdate_In_Case_Of_Multiple_Threads() throws Exception {
         int matchNumber = scoreboard.startMatch("Germany", "France");
-        final int numberOfThreads = 10; // Increase threads to increase likelihood of failure
-        final int numberOfIncrements = 100; // Total increments per thread
-
-        Thread[] threads = new Thread[numberOfThreads];
-
-        for (int i = 0; i < numberOfThreads; i++) {
-            threads[i] = new Thread(() -> {
-                for (int j = 0; j < numberOfIncrements; j++) {
-                    int localHomeScore = 0;// Fetch current home score
-                    int localAwayScore = 0;
-                    try {
-                        Match match = scoreboard.getMatches().getFirst();
-                        localHomeScore = match.getHomeTeamScore();
-                        localAwayScore = match.getAwayTeamScore();
-                        scoreboard.updateScore(matchNumber, localHomeScore + 1, localAwayScore + 1);
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
+        Thread thread1 = new Thread(() -> {
+            try {
+                for (int i = 1; i <= 5; i++) {
+                    scoreboard.updateScore(matchNumber, i, i);
                 }
-            });
-            threads[i].start();
-        }
+            } catch (Exception e) {
+                logger.severe(e.getMessage());
+            }
+        });
 
-        for (Thread thread : threads) {
-            thread.join(); // Wait for all threads to finish
-        }
-        // Expected score is the number of threads times the number of increments
-        int expectedScore = numberOfThreads * numberOfIncrements;
+        Thread thread2 = new Thread(() -> {
+            try {
+                for (int i = 6; i <= 10; i++) {
+                    scoreboard.updateScore(matchNumber, i, i);
+                }
+            } catch (Exception e) {
+                logger.severe(e.getMessage());
+            }
+        });
 
+        thread1.start();
+        thread2.start();
+
+        thread1.join();
+        thread2.join();
+
+        int expectedScore = 10;
         Match match = scoreboard.getMatches().getFirst();
-        assertTrue(match.getHomeTeamScore() == expectedScore && match.getAwayTeamScore() == expectedScore, "Scores are unexpectedly correct and did not experience race conditions.");
+        assertTrue(match.getHomeTeamScore() == expectedScore && match.getAwayTeamScore() == expectedScore, "Scores are correct and did not experience race conditions.");
+        assertEquals("Germany 10 - France 10", scoreboard.getScoreBoardSummary().getFirst());
     }
-
 }

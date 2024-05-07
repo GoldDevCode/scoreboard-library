@@ -41,6 +41,10 @@ public enum Teams {
         this.label = label;
     }
 
+    public String getLabel() {
+        return label;
+    }
+
     public static boolean isValidTeam(String teamName) {
         for (Teams team : Teams.values()) {
             if (team.getLabel().equalsIgnoreCase(teamName)) {
@@ -48,9 +52,5 @@ public enum Teams {
             }
         }
         return false;
-    }
-
-    public String getLabel() {
-        return label;
     }
 }

@@ -4,22 +4,24 @@ import com.sportradar.dev.match.Match;
 import com.sportradar.dev.scoreboard.ScoreBoard;
 import com.sportradar.dev.team.Teams;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
-public class ScoreBoardImpl implements ScoreBoard {
+public final class ScoreBoardImpl implements ScoreBoard {
 
     private static final Logger logger = Logger.getLogger(ScoreBoardImpl.class.getName());
-    private Map<Integer, Match> matches = new HashMap<>();
-    private Map<String, Integer> teamToMatchNumber = new HashMap<>();
+    private final AtomicInteger nextMatchId = new AtomicInteger(0);
+    private final Map<Integer, Match> matches = new ConcurrentHashMap<>();
+    private final Map<String, Integer> teamToMatchNumber = new ConcurrentHashMap<>();
 
     /**
      * @param homeTeam
      * @param awayTeam
-     * @return
+     * @return matchNumber
      * @throws Exception
      */
     @Override
@@ -31,18 +33,34 @@ public class ScoreBoardImpl implements ScoreBoard {
                         "HomeTeam=" + homeTeam + ", AwayTeam=" + awayTeam);
             }
 
-            if (teamToMatchNumber.containsKey(homeTeam) || teamToMatchNumber.containsKey(awayTeam)) {
-                throw new IllegalStateException("One or both of the teams already playing a match." +
+            if (homeTeam.equals(awayTeam)) {
+                throw new IllegalArgumentException("Duplicate team names. " +
+                        "Home team name and Away team name are same" +
+                        "HomeTeam=" + homeTeam + ", AwayTeam=" + awayTeam);
+            }
+
+            final int matchId = nextMatchId.incrementAndGet();
+
+            boolean homeAdded = teamToMatchNumber.computeIfAbsent(homeTeam, k -> matchId) == matchId;
+            boolean awayAdded = teamToMatchNumber.computeIfAbsent(awayTeam, k -> matchId) == matchId;
+
+            if (!homeAdded) {
+                throw new IllegalStateException("Home team already playing a match." +
+                        "Cannot start a new match." +
+                        "HomeTeam=" + homeTeam + ", AwayTeam=" + awayTeam);
+            }
+
+            if (!awayAdded) {
+                teamToMatchNumber.remove(homeTeam);
+                throw new IllegalStateException("Away team already playing a match." +
                         "Cannot start a new match." +
                         "HomeTeam=" + homeTeam + ", AwayTeam=" + awayTeam);
             }
 
             Match match = new Match(homeTeam, awayTeam);
             final int matchNumber = match.getId();
-
-            teamToMatchNumber.put(homeTeam, matchNumber);
-            teamToMatchNumber.put(awayTeam, matchNumber);
             matches.put(matchNumber, match);
+
             return matchNumber;
         } catch (IllegalArgumentException | IllegalStateException e) {
             logger.severe(e.getMessage());
@@ -130,7 +148,7 @@ public class ScoreBoardImpl implements ScoreBoard {
      */
     @Override
     public List<Match> getMatches() throws Exception {
-        return new ArrayList<>(matches.values());
+        final List<Match> matchList = Collections.unmodifiableList(matches.values().stream().toList());
+        return matchList;
     }
-
 }

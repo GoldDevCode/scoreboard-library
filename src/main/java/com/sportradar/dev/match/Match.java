@@ -1,15 +1,17 @@
 package com.sportradar.dev.match;
 
-public class Match {
-    private static int idGenerator = 0;
+import java.util.concurrent.atomic.AtomicInteger;
+
+public final class Match {
+    private static final AtomicInteger idGenerator = new AtomicInteger(0);
     private final int id;
     private final String homeTeam;
     private final String awayTeam;
-    private int homeTeamScore;
-    private int awayTeamScore;
+    private final AtomicInteger homeTeamScore = new AtomicInteger(0);
+    private final AtomicInteger awayTeamScore = new AtomicInteger(0);
 
     public Match(String homeTeam, String awayTeam) {
-        this.id = ++idGenerator;
+        this.id = idGenerator.incrementAndGet();
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
     }
@@ -27,29 +29,29 @@ public class Match {
     }
 
     public int getHomeTeamScore() {
-        return homeTeamScore;
-    }
-
-    public int getAwayTeamScore() {
-        return awayTeamScore;
+        return homeTeamScore.get();
     }
 
     public void setHomeTeamScore(int homeTeamScore) {
-        this.homeTeamScore = homeTeamScore;
+        this.homeTeamScore.set(homeTeamScore);
+    }
+
+    public int getAwayTeamScore() {
+        return awayTeamScore.get();
     }
 
     public void setAwayTeamScore(int awayTeamScore) {
-        this.awayTeamScore = awayTeamScore;
+        this.awayTeamScore.set(awayTeamScore);
     }
 
     public int getTotalScore() {
-        return homeTeamScore + awayTeamScore;
+        return homeTeamScore.get() + awayTeamScore.get();
     }
 
     @Override
     public String toString() {
-        return homeTeam + " " + homeTeamScore +
+        return homeTeam + " " + homeTeamScore.get() +
                 " - " +
-                awayTeam + " " + awayTeamScore;
+                awayTeam + " " + awayTeamScore.get();
     }
 }
