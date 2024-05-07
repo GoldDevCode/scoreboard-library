@@ -22,7 +22,7 @@ public class ScoreBoardTests {
     }
 
     /**
-     * Initial test to check if the test framework is working
+     * Initial test to check if the test framework is setup correctly and working
      */
     @Test
     @DisplayName("Check if the test framework is working")
@@ -139,7 +139,7 @@ public class ScoreBoardTests {
     }
 
     @Test
-    void testStartMatch_Race_Condition_With_Multiple_Threads() throws Exception {
+    void testStartMatch_Race_Condition_With_Multiple_Threads_OK() throws Exception {
         Thread thread1 = new Thread(() -> {
             try {
                 scoreboard.startMatch("Germany", "France");
@@ -166,7 +166,7 @@ public class ScoreBoardTests {
     }
 
     @Test
-    void testIncorrectScoreUpdate_In_Case_Of_Multiple_Threads() throws Exception {
+    void testScoreUpdate_In_Case_Of_Multiple_Threads_OK() throws Exception {
         int matchNumber = scoreboard.startMatch("Germany", "France");
         Thread thread1 = new Thread(() -> {
             try {
@@ -198,5 +198,74 @@ public class ScoreBoardTests {
         Match match = scoreboard.getMatches().getFirst();
         assertTrue(match.getHomeTeamScore() == expectedScore && match.getAwayTeamScore() == expectedScore, "Scores are correct and did not experience race conditions.");
         assertEquals("Germany 10 - France 10", scoreboard.getScoreBoardSummary().getFirst());
+    }
+
+    @Test
+    void testIncorrectScoreUpdate_In_Case_Of_Multiple_Threads_With_Sleep_OK() throws Exception {
+        int matchNumber = scoreboard.startMatch("Germany", "France");
+        Thread thread1 = new Thread(() -> {
+            try {
+                for (int i = 1; i <= 5; i++) {
+                    scoreboard.updateScore(matchNumber, i, i);
+                    Thread.sleep(1000);
+                }
+            } catch (Exception e) {
+                logger.severe(e.getMessage());
+            }
+        });
+
+        Thread thread2 = new Thread(() -> {
+            try {
+                for (int i = 6; i <= 10; i++) {
+                    scoreboard.updateScore(matchNumber, i, i);
+                    Thread.sleep(1000);
+                }
+            } catch (Exception e) {
+                logger.severe(e.getMessage());
+            }
+        });
+
+        thread1.start();
+        thread2.start();
+
+        thread1.join();
+        thread2.join();
+
+        int expectedScore = 10;
+        Match match = scoreboard.getMatches().getFirst();
+        assertTrue(match.getHomeTeamScore() == expectedScore && match.getAwayTeamScore() == expectedScore, "Scores are correct and did not experience race conditions.");
+    }
+
+    @Test
+    void testMultipleConcurrentOperations_OK() throws Exception {
+        int matchNumber1 = scoreboard.startMatch("Germany", "France");
+        int matchNumber2 = scoreboard.startMatch("Costa Rica", "Saudi Arabia");
+        Thread thread1 = new Thread(() -> {
+            try {
+                scoreboard.startMatch("Germany", "France");
+                scoreboard.updateScore(matchNumber1, 3, 2);
+                scoreboard.finishMatch(matchNumber1);
+            } catch (Exception e) {
+                logger.severe(e.getMessage());
+            }
+        });
+
+        Thread thread2 = new Thread(() -> {
+            try {
+                scoreboard.startMatch("Costa Rica", "Saudi Arabia");
+                scoreboard.updateScore(matchNumber2, 1, 1);
+                scoreboard.finishMatch(matchNumber2);
+            } catch (Exception e) {
+                logger.severe(e.getMessage());
+            }
+        });
+
+        thread1.start();
+        thread2.start();
+
+        thread1.join();
+        thread2.join();
+
+        assertEquals(0, scoreboard.getMatches().size());
     }
 }
